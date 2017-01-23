@@ -34,31 +34,39 @@ namespace calc{
         }
 
         pushNumericButton(number : number) {
-            if (this.lastButtonType != ButtonType.Number) {
+            if (!this.isNonActionButtonType(this.lastButtonType)) {
                 this.displayNumber = 0;
             }
 
-            this.displayNumber    = this.displayNumber*10 + number;
+            this.displayNumber    = this.displayNumber * 10 + number;
             this.lastButtonType   = ButtonType.Number;
         }
 
         pushAddition() {
+            if (this.isNonActionButtonType(this.lastButtonType)) {
+                this.cacheNumber     = this.displayNumber;
+            }
+
             this.lastButtonType   = ButtonType.Addition;
             this.activeOperation  = Operation.Addition;
-            this.cacheNumber     += this.displayNumber;
-            this.displayNumber    = this.cacheNumber;
         }
 
         pushMultiplication() {
-            if (this.lastButtonType == ButtonType.NothingPressedYet || this.lastButtonType == ButtonType.Number){
+            if (this.isNonActionButtonType(this.lastButtonType)){
                 this.cacheNumber      = this.displayNumber;
             } else {
-                this.cacheNumber  *= this.displayNumber;
-                this.displayNumber = this.cacheNumber;
+                let oldCache = this.cacheNumber;
+                this.cacheNumber = this.displayNumber;
+                this.displayNumber *= oldCache;
             }
 
             this.lastButtonType   = ButtonType.Multiplication;
             this.activeOperation  = Operation.Multiplication;
+        }
+
+        private isNonActionButtonType(buttonType : ButtonType) : boolean {
+            return this.lastButtonType == ButtonType.NothingPressedYet || 
+                   this.lastButtonType == ButtonType.Number;
         }
 
         pushEquals() {
@@ -71,6 +79,8 @@ namespace calc{
                 case Operation.None:
                     break;
             }
+
+            this.lastButtonType = ButtonType.Equals;
         }
 
         pushClear() {

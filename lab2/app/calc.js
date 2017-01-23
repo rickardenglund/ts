@@ -27,28 +27,34 @@ var calc;
             this.lastButtonType = ButtonType.NothingPressedYet;
         };
         Calculator.prototype.pushNumericButton = function (number) {
-            if (this.lastButtonType != ButtonType.Number) {
+            if (!this.isNonActionButtonType(this.lastButtonType)) {
                 this.displayNumber = 0;
             }
             this.displayNumber = this.displayNumber * 10 + number;
             this.lastButtonType = ButtonType.Number;
         };
         Calculator.prototype.pushAddition = function () {
+            if (this.isNonActionButtonType(this.lastButtonType)) {
+                this.cacheNumber = this.displayNumber;
+            }
             this.lastButtonType = ButtonType.Addition;
             this.activeOperation = Operation.Addition;
-            this.cacheNumber += this.displayNumber;
-            this.displayNumber = this.cacheNumber;
         };
         Calculator.prototype.pushMultiplication = function () {
-            if (this.lastButtonType == ButtonType.NothingPressedYet || this.lastButtonType == ButtonType.Number) {
+            if (this.isNonActionButtonType(this.lastButtonType)) {
                 this.cacheNumber = this.displayNumber;
             }
             else {
-                this.cacheNumber *= this.displayNumber;
-                this.displayNumber = this.cacheNumber;
+                var oldCache = this.cacheNumber;
+                this.cacheNumber = this.displayNumber;
+                this.displayNumber *= oldCache;
             }
             this.lastButtonType = ButtonType.Multiplication;
             this.activeOperation = Operation.Multiplication;
+        };
+        Calculator.prototype.isNonActionButtonType = function (buttonType) {
+            return this.lastButtonType == ButtonType.NothingPressedYet ||
+                this.lastButtonType == ButtonType.Number;
         };
         Calculator.prototype.pushEquals = function () {
             switch (this.activeOperation) {
@@ -60,6 +66,7 @@ var calc;
                 case Operation.None:
                     break;
             }
+            this.lastButtonType = ButtonType.Equals;
         };
         Calculator.prototype.pushClear = function () {
             this.init();
