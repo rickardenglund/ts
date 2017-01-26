@@ -9,15 +9,19 @@ namespace collections {
     /**
      * An interface for visiting each entry in a collection
      */
-    interface Iterator<E> {
+    export interface Iterator<E> {
         hasNext(): boolean;
         next(): E;
+    }
+
+    export interface Iterable<E> {
+        iterator(): Iterator<E>;
     }
 
     /**
      * A bunch of objects
      */
-    interface Collection<E> extends Iterable<E> {
+    export interface Collection<E> extends Iterable<E> {
 
         size(): number;
 
@@ -27,22 +31,72 @@ namespace collections {
 
         iterator(): Iterator<E>;
 
-        toArray(): E[];
+        // toArray(): E[];
 
         add(e: E): boolean;
 
         remove(e: any): boolean;
 
-        addAll(col: Collection<E>): boolean;
+        // addAll(col: Collection<E>): boolean;
 
-        removeAll(col: Collection<any>): boolean;
+        // removeAll(col: Collection<any>): boolean;
 
-        containsAll(col: Collection<any>): boolean;
+        // containsAll(col: Collection<any>): boolean;
 
-        retainAll(col: Collection<any>): boolean;
+        // retainAll(col: Collection<any>): boolean;
 
         clear(): void;
 
+    }
+
+    export class MyCollection<E>  implements Collection<E>, Iterable<E>{
+        list : E[];
+        constructor() {
+            this.list = [];
+        }
+
+        size(): number {
+            return this.list.length;
+        }
+
+        isEmpty(): boolean { 
+            return this.list.length == 0;
+        }
+
+        contains(e: any): boolean { 
+            for (let element of this.list) {
+                console.log(element);
+                if (e == element) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        iterator(): Iterator<E> {
+            return null;
+        };
+
+        // toArray(): E[];
+
+        add(e: E): boolean {
+            this.list = this.list.concat(this.list, [e]);
+            return true;
+        }
+
+        remove(e: any): boolean {return false;};
+
+        // addAll(col: Collection<E>): boolean;
+
+        // removeAll(col: Collection<any>): boolean;
+
+        // containsAll(col: Collection<any>): boolean;
+
+        // retainAll(col: Collection<any>): boolean;
+
+        clear(): void {
+            this.list = [];
+        }
     }
 
     /**
